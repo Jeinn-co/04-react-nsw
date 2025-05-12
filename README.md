@@ -1,12 +1,89 @@
-# React + Vite
+```bash
+npm install msw --save-dev
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+npx msw init public/ --save
+// 在 `public` 資料夾中生成 `mockServiceWorker.js`。
+```
+```js
+// src/mocks/handlers.js
+import { http, HttpResponse } from 'msw'
 
-Currently, two official plugins are available:
+export const handlers = [
+  http.get('/api/user', () => {
+    return HttpResponse.json({ name: 'John Maverick' })
+  })
+]
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+// src/mocks/browser.js
+import { setupWorker } from 'msw/browser'
+import { handlers } from './handlers'
 
-## Expanding the ESLint configuration
+export const worker = setupWorker(...handlers)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+// src/mocks/server.js
+import { setupServer } from 'msw/node'
+import { handlers } from './handlers'
+
+export const server = setupServer(...handlers)
+```
+
+```js
+// src/main.jsx
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App.jsx'
+
+async function enableMocking() {
+  if (process.env.NODE_ENV !== 'development') {
+    return
+  }
+
+  const { worker } = await import('./mocks/browser')
+  await worker.start()
+}
+
+enableMocking().then(() => {
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  )
+})
+```
+
+```js
+// src/App.jsx
+import { useEffect, useState } from 'react'
+
+function App() {
+  const [user, setUser] = useState(null)
+
+  useEffect(() => {
+    fetch('/api/user')
+      .then((res) => res.json())
+      .then((data) => setUser(data.name))
+  }, [])
+
+  return (
+    <div>
+      <h1>Vite + React + MSW Template (JavaScript)</h1>
+      <p>User: {user || 'Loading...'}</p>
+    </div>
+  )
+}
+
+export default App
+```
+
+
+```bash
+# test run
+npm run dev
+```
+---
+Display
+```
+Vite + React + MSW Template (JavaScript)
+User: John Maverick
+```
+
