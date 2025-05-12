@@ -8,7 +8,48 @@ const users = [
   { id: 4, name: 'David', email: 'david@example.com' },
 ]
 
+let currentUser = {
+  username: 'guest',
+  avatar: 'https://i.pravatar.cc/40?u=guest'
+}
+
 export const handlers = [
+
+  // 登入 (POST /api/login)
+  http.post('/api/login', async ({ request }) => {
+    const { username } = await request.json()
+    if (!username) {
+      return new HttpResponse(
+        JSON.stringify({ error: 'Username required' }),
+        { status: 400, statusText: 'Bad Request', headers: { 'Content-Type': 'application/json' } }
+      )
+    }
+    currentUser = {
+      username,
+      avatar: `https://i.pravatar.cc/40?u=${username}`
+    }
+    return HttpResponse.json({ success: true, user: currentUser })
+  }),
+
+  // 取得個人資料 (GET /api/profile)
+  http.get('/api/profile', () => {
+    return HttpResponse.json(currentUser)
+  }),
+
+  // 更新個人資料 (PUT /api/profile)
+  http.put('/api/profile', async ({ request }) => {
+    const { username } = await request.json()
+    if (!username) {
+      return new HttpResponse(
+        JSON.stringify({ error: 'Username required' }),
+        { status: 400, statusText: 'Bad Request', headers: { 'Content-Type': 'application/json' } }
+      )
+    }
+    currentUser.username = username
+    currentUser.avatar = `https://i.pravatar.cc/40?u=${username}`
+    return HttpResponse.json(currentUser)
+  }),
+  
   // 分頁查詢 (GET /api/users?page=1&limit=2)
   http.get('/api/users', ({ request }) => {
     const url = new URL(request.url)
