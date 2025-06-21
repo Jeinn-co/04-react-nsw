@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Container, Paper, TextField, Button, Typography, Avatar, Box } from '@mui/material';
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState(null);
@@ -24,22 +25,56 @@ export default function ProfilePage() {
     else alert(data.error);
   };
 
-  if (!profile) return <p>Loading...</p>;
+  if (!profile) return <Typography>Loading...</Typography>;
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h2>Profile</h2>
-      <p>Current Username: {profile.username}</p>
-      <img src={profile.avatar} alt="avatar" />
-      <div style={{ marginTop: '10px' }}>
-        <input
-          value={newName}
-          onChange={(e) => setNewName(e.target.value)}
+    <Container
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <Paper
+        elevation={3}
+        sx={{
+          p: 5,
+          minWidth: 340,
+          borderRadius: 2,
+          textAlign: 'center',
+        }}
+      >
+        <Typography variant="h4" sx={{ mb: 2.5 }}>
+          個人資料
+        </Typography>
+        <Avatar
+          src={profile.avatar}
+          sx={{
+            width: 96,
+            height: 96,
+            mx: 'auto',
+            mb: 2,
+          }}
         />
-        <button onClick={handleUpdate} style={{ marginLeft: '10px' }}>
-          Update Profile
-        </button>
-      </div>
-    </div>
+        <Typography variant="h6" sx={{ mb: 1 }}>
+          使用者名稱：{profile.username}
+        </Typography>
+        <Box sx={{ mt: 2.5, display: 'flex', gap: 1.5, justifyContent: 'center' }}>
+          <TextField
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)}
+            size="small"
+            sx={{ minWidth: 120 }}
+          />
+          <Button
+            onClick={handleUpdate}
+            variant="contained"
+          >
+            更新
+          </Button>
+        </Box>
+      </Paper>
+    </Container>
   );
 }

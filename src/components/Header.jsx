@@ -1,13 +1,51 @@
 import { Link } from 'react-router-dom';
+import { AppBar, Toolbar, Avatar, Button, Typography, Box } from '@mui/material';
 
 export default function Header({ user, onLogout }) {
   return (
-    <header style={{ padding: '10px', borderBottom: '1px solid #ccc' }}>
-      <img src={user.avatar} alt="avatar" width="30" style={{ borderRadius: '50%' }} />
-      <span style={{ marginLeft: '10px', marginRight: '20px' }}>{user.username}</span>
-      <Link to="/api-test" style={{ marginRight: '10px' }}>API 測試</Link>
-      <Link to="/profile" style={{ marginRight: '10px' }}>Profile</Link>
-      <button onClick={onLogout}>登出</button>
-    </header>
+    <AppBar position="static" sx={{ boxShadow: 1, borderRadius: '0 0 18px 18px' }}>
+      <Toolbar sx={{ gap: 2 }}>
+        <Avatar src={user.avatar} sx={{ width: 36, height: 36 }} />
+        <Typography variant="body1" color="inherit" sx={{ mr: 3, fontSize: '17px' }}>
+          {user.username}
+        </Typography>
+        <Button
+          component={Link}
+          to="/api-test"
+          color="inherit"
+          sx={{
+            '&:hover': { background: 'action.hover' },
+            borderRadius: '8px',
+            px: 2,
+          }}
+        >
+          API 測試
+        </Button>
+        <Button
+          component={Link}
+          to="/profile"
+          color="inherit"
+          sx={{
+            '&:hover': { background: 'action.hover' },
+            borderRadius: '8px',
+            px: 2,
+          }}
+        >
+          Profile
+        </Button>
+        <Box sx={{ flexGrow: 1 }} />
+        <Button
+          onClick={onLogout}
+          variant="outlined"
+          color="inherit"
+          sx={{
+            borderRadius: '8px',
+            px: 2.5,
+          }}
+        >
+          登出
+        </Button>
+      </Toolbar>
+    </AppBar>
   );
 }
