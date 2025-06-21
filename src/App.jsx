@@ -1,19 +1,19 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useAuth } from './contexts/AuthContext';
 import LoginPage from './pages/LoginPage';
 import ApiTestPage from './pages/ApiTestPage';
 import ProfilePage from './pages/ProfilePage';
 import Header from './components/Header';
 
 function App() {
-  const [user, setUser] = useState(null);
+  const { user } = useAuth();
 
   return (
     <Router>
-      {user && <Header user={user} onLogout={() => setUser(null)} />}
+      {user && <Header />}
       <Routes>
         <Route path="/login" element={
-          user ? <Navigate to="/api-test" /> : <LoginPage onLogin={setUser} />
+          user ? <Navigate to="/api-test" /> : <LoginPage />
         } />
         <Route path="/api-test" element={
           user ? <ApiTestPage /> : <Navigate to="/login" />
