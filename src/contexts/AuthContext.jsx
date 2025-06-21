@@ -13,7 +13,11 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
-  const value = { user, login, logout };
+  const updateUser = (newUserData) => {
+    setUser(newUserData);
+  };
+
+  const value = { user, login, logout, updateUser };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

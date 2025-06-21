@@ -1,18 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Container, Paper, TextField, Button, Typography, Avatar, Box } from '@mui/material';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function ProfilePage() {
-  const [profile, setProfile] = useState(null);
-  const [newName, setNewName] = useState('');
+  const { user, updateUser } = useAuth();
+  const [newName, setNewName] = useState(user?.username || '');
 
   useEffect(() => {
-    fetch('/api/profile')
-      .then((res) => res.json())
-      .then((data) => {
-        setProfile(data);
-        setNewName(data.username);
-      });
-  }, []);
+    if (user) {
+      setNewName(user.username);
+    }
+  }, [user]);
 
   const handleUpdate = async () => {
     const res = await fetch('/api/profile', {
@@ -21,11 +19,14 @@ export default function ProfilePage() {
       body: JSON.stringify({ username: newName })
     });
     const data = await res.json();
-    if (res.ok) setProfile(data);
-    else alert(data.error);
+    if (res.ok) {
+      updateUser(data);
+    } else {
+      alert(data.error);
+    }
   };
 
-  if (!profile) return <Typography>Loading...</Typography>;
+  if (!user) return <Typography>Loading...</Typography>;
 
   return (
     <Container
@@ -49,7 +50,7 @@ export default function ProfilePage() {
           個人資料
         </Typography>
         <Avatar
-          src={profile.avatar}
+          src={user.avatar}
           sx={{
             width: 96,
             height: 96,
@@ -58,7 +59,7 @@ export default function ProfilePage() {
           }}
         />
         <Typography variant="h6" sx={{ mb: 1 }}>
-          使用者名稱：{profile.username}
+          使用者名稱：{user.username}
         </Typography>
         <Box sx={{ mt: 2.5, display: 'flex', gap: 1.5, justifyContent: 'center' }}>
           <TextField
