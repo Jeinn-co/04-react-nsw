@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
 import { AppBar, Toolbar, Avatar, Button, Typography, Box } from '@mui/material';
+import { useAuth } from '../contexts/AuthContext';
 
-export default function Header({ user, onLogout }) {
+export default function Header() {
+  const { user, logout } = useAuth();
   return (
     <AppBar position="static" sx={{ boxShadow: 1, borderRadius: '0 0 18px 18px' }}>
       <Toolbar sx={{ gap: 2 }}>
@@ -35,7 +37,7 @@ export default function Header({ user, onLogout }) {
         </Button>
         <Box sx={{ flexGrow: 1 }} />
         <Button
-          onClick={onLogout}
+          onClick={logout}
           variant="outlined"
           color="inherit"
           sx={{

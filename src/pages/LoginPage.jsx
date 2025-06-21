@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { Container, Paper, TextField, Button, Typography, Box } from '@mui/material';
+import { useAuth } from '../contexts/AuthContext';
 
-export default function LoginPage({ onLogin }) {
+export default function LoginPage() {
   const [username, setUsername] = useState('');
+  const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -14,7 +16,7 @@ export default function LoginPage({ onLogin }) {
       body: JSON.stringify({ username })
     });
     const data = await res.json();
-    if (res.ok) onLogin(data.user);
+    if (res.ok) login(data.user);
     else alert(data.error);
   };
 
