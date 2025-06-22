@@ -14,13 +14,13 @@ export const handlers = [
   })
 ]
 
-// src/mocks/browser.js
+// src/mocks/browser.js for Browser
 import { setupWorker } from 'msw/browser'
 import { handlers } from './handlers'
 
 export const worker = setupWorker(...handlers)
 
-// src/mocks/server.js
+// src/mocks/server.js for Node.js
 import { setupServer } from 'msw/node'
 import { handlers } from './handlers'
 
